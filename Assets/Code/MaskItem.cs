@@ -14,7 +14,6 @@ public class MaskItem : MonoBehaviour
     private Sprite emptySprite;
     
     private Rigidbody2D rb;
-    private Collider2D[] boneColliders;
     
     private Vector3[] bonesLocalPositions;
     private Quaternion[] bonesLocalRotations;
@@ -30,8 +29,6 @@ public class MaskItem : MonoBehaviour
         rb = GetComponent<Rigidbody2D>();
         sr = GetComponent<SpriteRenderer>();
         block = new MaterialPropertyBlock();
-        
-        boneColliders = GetComponentsInChildren<Collider2D>();
         
         bonesLocalPositions = new Vector3[bonesRbs.Length];
         bonesLocalRotations = new Quaternion[bonesRbs.Length];
@@ -60,9 +57,6 @@ public class MaskItem : MonoBehaviour
         
         foreach (Rigidbody2D boneRb in bonesRbs)
             boneRb.bodyType = type;
-        
-        foreach (Collider2D col in boneColliders)
-            col.enabled = !freeze;
         
         isFrozen = freeze;
     }

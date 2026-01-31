@@ -1,6 +1,6 @@
-using System;
 using System.Collections.Generic;
 using UnityEngine;
+using Random = System.Random;
 
 public class MaskPool : MonoBehaviour
 {
@@ -26,16 +26,16 @@ public class MaskPool : MonoBehaviour
         }
         
         MaskItem lastMask = pool[pool.Count - 1];
-        lastMask.SetMask(batmask); //should be batman mask
+        lastMask.SetMask(batmask);
         
-        InvokeRepeating("Remove", 1f, 0.5f);
+        InvokeRepeating("Remove", 1f, 0.2f);
     }
 
     public void Remove()
     {
         MaskItem lastMask = pool[pool.Count - 1];
         
-        lastMask.Remove(new Vector2(0.5f, 0.5f), 175f);
+        lastMask.Remove(new Vector2(UnityEngine.Random.Range(-1f, 1f), UnityEngine.Random.Range(-1, 1f)), UnityEngine.Random.Range(150, 200f));
         pool.RemoveAt(pool.Count - 1);
         pool.Insert(0, lastMask);
         
@@ -43,8 +43,9 @@ public class MaskPool : MonoBehaviour
         
         if(!lastMask.Frozen)
             lastMask.Reset();
-        
-        lastMask.SetMask(maskLibrary.GetRandom().Sprite); //choose random
-        //play sound
+
+        MaskLibrary.MaskEntry entry = maskLibrary.GetRandom();
+        lastMask.SetMask(entry.Sprite); //choose random
+        SoundManager.Instance.PlayFX(entry.fxKey != "" ? entry.fxKey : "default mask");
     }
 }

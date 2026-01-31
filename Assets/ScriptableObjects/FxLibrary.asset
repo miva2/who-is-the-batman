@@ -13,5 +13,7 @@ MonoBehaviour:
   m_Name: FxLibrary
   m_EditorClassIdentifier: Assembly-CSharp::FxLibrary
   fx:
-  - key: mask
+  - key: default mask
+    sound: {fileID: 8300000, guid: 888d61782b86441369bd9e79454c356f, type: 3}
+  - key: duck
     sound: {fileID: 8300000, guid: 888d61782b86441369bd9e79454c356f, type: 3}
