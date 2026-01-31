@@ -10,13 +10,15 @@ public class GameManager : MonoBehaviour
 
     [SerializeField] private BaseItem[] items;
 
-    private HugeNumber total; 
+    private HugeNumber total;
+    public HugeNumber CurrentTotal => total;
     private HugeNumber money;
+    public HugeNumber CurrentMoney => money;
     private HugeNumber rate;
+    public HugeNumber CurrentRate => rate;
 
     private int maskValue;
     
-    public HugeNumber CurrentMoney => money;
 
     private void Awake()
     {
