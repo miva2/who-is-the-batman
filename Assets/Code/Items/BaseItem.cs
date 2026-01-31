@@ -14,15 +14,16 @@ public class BaseItem : MonoBehaviour
     [SerializeField] protected float maxForce;
     
     [Header("Shop")]
-    [SerializeField] protected int basePrice; //need big number here
+    [SerializeField] protected HugeNumber basePrice; //need big number here
     [SerializeField] protected float priceMultiplier = 1.15f; 
     [SerializeField] protected int upgradesAmount;
+    [SerializeField] protected Sprite icon;
     
     [Header("Upgrades")]
     [SerializeField] protected float maxAnimDuration = 2;
     [SerializeField] protected float minAnimDuration = 0.1f;
-    [SerializeField] protected int minMaskRemoveAmount = 1; //need big number here
-    [SerializeField] protected int maxMaskRemoveAmount = 10; //need big number here
+    [SerializeField] protected HugeNumber minMaskRemoveAmount; //need big number here
+    [SerializeField] protected HugeNumber maxMaskRemoveAmount; //need big number here
     [SerializeField] protected float maxAutoCooldown = 1;
     [SerializeField] protected float minAutoCooldown = 1;
     
@@ -32,16 +33,26 @@ public class BaseItem : MonoBehaviour
     [SerializeField] 
     protected float cooldown;
     [SerializeField] 
-    protected int maskRemoveAmount;
+    protected HugeNumber maskRemoveAmount;
     [SerializeField] 
     protected float animDuration;
     
     protected float timer = 0;
     protected Coroutine removeCoroutine;
+    
+    public Sprite Icon => icon;
+    public int Level => currentUpgrade;
 
-    public int GetPrice()
+    public int MaxLevel => upgradesAmount;
+
+    public HugeNumber GetPrice()
     {
-        return Mathf.CeilToInt(basePrice * Mathf.Pow(priceMultiplier, currentUpgrade));
+        return basePrice.Mult(Mathf.Pow(priceMultiplier, currentUpgrade));
+    }
+
+    public HugeNumber GetRate()
+    {
+        return maskRemoveAmount.Mult(1f/cooldown);
     }
 
     public virtual void Upgrade()
@@ -58,7 +69,7 @@ public class BaseItem : MonoBehaviour
             float delta = (float)currentUpgrade / upgradesAmount;
             cooldown = Mathf.Lerp(maxAutoCooldown, minAutoCooldown, delta);
             animDuration = Mathf.Lerp(maxAnimDuration, minAnimDuration, delta);
-            maskRemoveAmount = Mathf.CeilToInt(Mathf.Lerp(minMaskRemoveAmount, maxMaskRemoveAmount, delta));
+            maskRemoveAmount = HugeNumber.Lerp(minMaskRemoveAmount, maxMaskRemoveAmount, delta);
         }
         
         currentUpgrade++;
@@ -108,5 +119,37 @@ public class BaseItem : MonoBehaviour
             MaskPool.Instance.Remove(dir.normalized, force);
         
         GameManager.Instance.Gain(maskRemoveAmount);
+    }
+
+    public HugeNumber GetNextLevelAmount()
+    {
+        if (currentUpgrade == upgradesAmount)
+        {
+            return maskRemoveAmount;
+        }
+
+        float delta = (float)(currentUpgrade + 1) / upgradesAmount;
+        return HugeNumber.Lerp(minMaskRemoveAmount, maxMaskRemoveAmount, delta);
+    }
+    
+    public int GetNextLevel()
+    {
+        if (currentUpgrade == upgradesAmount)
+        {
+            return currentUpgrade;
+        }
+        
+        return currentUpgrade + 1;
+    }
+    
+    public float GetNextLevelCoolDown()
+    {
+        if (currentUpgrade == upgradesAmount)
+        {
+            return cooldown;
+        }
+        
+        float delta = (float)(currentUpgrade + 1) / upgradesAmount;
+        return Mathf.Lerp(maxAutoCooldown, minAutoCooldown, delta);
     }
 }

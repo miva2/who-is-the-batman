@@ -82,5 +82,12 @@ public class HugeNumberTest : MonoBehaviour
         Debug.Log($"{smaller3} < {smaller4} = {isSmallerThan34}");
         Debug.Log($"{smaller4} < {smaller3} = {isSmallerThan43}");
         
+        //test lerp
+        HugeNumber num1 = new HugeNumber(100, 8);
+        HugeNumber num2 = new HugeNumber(100, 9);
+        
+        HugeNumber lerp = HugeNumber.Lerp(num1, num2, 0.5f);
+        Debug.Log($"lerp : {lerp}");
+        
     }
 }

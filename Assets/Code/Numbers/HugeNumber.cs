@@ -109,7 +109,7 @@ public class HugeNumber
         }
     }
     
-    private string FormatNumber(string format)
+    public string FormatNumber()
     {
         // okay to do this every frame?
         int remainder = exponent % step;
@@ -136,5 +136,13 @@ public class HugeNumber
     public override string ToString()
     {
         return $"{{val: {value} exp: {exponent}}}";
+    }
+
+    //num1 needs to be the smaller
+    public static HugeNumber Lerp(HugeNumber num1, HugeNumber num2, float delta)
+    {
+        HugeNumber diff = num2.Subtract(num1);
+        diff = diff.Mult(delta);
+        return num1.Add(diff);
     }
 }
