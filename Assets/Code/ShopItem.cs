@@ -3,7 +3,7 @@ using UnityEngine;
 using UnityEngine.UI;
 using UnityEngine.EventSystems;
 
-public class ShopItem : MonoBehaviour, IPointerEnterHandler
+public class ShopItem : MonoBehaviour, IPointerEnterHandler, IPointerExitHandler
 {
     [Header("UI")]
     public Button item;
@@ -16,10 +16,11 @@ public class ShopItem : MonoBehaviour, IPointerEnterHandler
     public string title;
     [TextArea]
     public string description;
+    public Sprite IconSprite;
 
     public void Fill(BaseItem baseItem)
     {
-        icon.sprite = baseItem.Icon;
+        icon.sprite = IconSprite;
         levelText.text = baseItem.Level.ToString("00");
 
         if (baseItem.Level == baseItem.MaxLevel)
@@ -48,5 +49,11 @@ public class ShopItem : MonoBehaviour, IPointerEnterHandler
     public void OnPointerEnter(PointerEventData eventData)
     {
         UIManager.Instance.FillDescription(this);
+        transform.localScale = Vector3.one * 1.1f;
+    }
+
+    public void OnPointerExit(PointerEventData eventData)
+    {
+        transform.localScale = Vector3.one;
     }
 }

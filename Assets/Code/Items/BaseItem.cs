@@ -14,16 +14,15 @@ public class BaseItem : MonoBehaviour
     [SerializeField] protected float maxForce;
     
     [Header("Shop")]
-    [SerializeField] protected HugeNumber basePrice; //need big number here
+    [SerializeField] protected HugeNumber basePrice; 
     [SerializeField] protected float priceMultiplier = 1.15f; 
     [SerializeField] protected int upgradesAmount;
-    [SerializeField] protected Sprite icon;
     
     [Header("Upgrades")]
     [SerializeField] protected float maxAnimDuration = 2;
     [SerializeField] protected float minAnimDuration = 0.1f;
-    [SerializeField] protected HugeNumber minMaskRemoveAmount; //need big number here
-    [SerializeField] protected HugeNumber maxMaskRemoveAmount; //need big number here
+    [SerializeField] protected HugeNumber minMaskRemoveAmount; 
+    [SerializeField] protected HugeNumber maxMaskRemoveAmount; 
     [SerializeField] protected float maxAutoCooldown = 1;
     [SerializeField] protected float minAutoCooldown = 1;
     
@@ -40,7 +39,6 @@ public class BaseItem : MonoBehaviour
     protected float timer = 0;
     protected Coroutine removeCoroutine;
     
-    public Sprite Icon => icon;
     public int Level => currentUpgrade;
 
     public int MaxLevel => upgradesAmount;
@@ -57,6 +55,12 @@ public class BaseItem : MonoBehaviour
 
     public virtual void Upgrade()
     {
+        //todo rework the upgrade, missing last level
+        currentUpgrade++;
+
+        if (currentUpgrade >= upgradesAmount)
+            currentUpgrade = upgradesAmount;
+        
         if (!gameObject.activeInHierarchy) //initial purchase
         {
             gameObject.SetActive(true);
@@ -71,11 +75,6 @@ public class BaseItem : MonoBehaviour
             animDuration = Mathf.Lerp(maxAnimDuration, minAnimDuration, delta);
             maskRemoveAmount = HugeNumber.Lerp(minMaskRemoveAmount, maxMaskRemoveAmount, delta);
         }
-        
-        currentUpgrade++;
-
-        if (currentUpgrade >= upgradesAmount)
-            currentUpgrade = upgradesAmount;
     }
 
     protected virtual void Update()
