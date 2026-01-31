@@ -46,6 +46,34 @@ public class ShopItem : MonoBehaviour, IPointerEnterHandler, IPointerExitHandler
         icon.color = baseItem.Level == 0 ? Color.gray : Color.white;
     }
 
+    public void Fill(int level, HugeNumber price)
+    {
+        icon.sprite = IconSprite;
+        levelText.text = level.ToString("00");
+
+        if (level == 99)
+        {
+            item.interactable = false;
+            item.GetComponent<Image>().color = Color.gray;
+            buyImage.color = Color.gray;
+            priceText.text = "Max";
+            return;
+        }
+            
+        priceText.text = price.FormatNumber();
+
+        if (price.IsBiggerThan(GameManager.Instance.CurrentMoney))
+        {
+            buyImage.color = Color.red;
+        }
+        else
+        {
+            buyImage.color = Color.green;
+        }
+            
+        icon.color = level == 0 ? Color.gray : Color.white;
+    }
+
     public void OnPointerEnter(PointerEventData eventData)
     {
         UIManager.Instance.FillDescription(this);

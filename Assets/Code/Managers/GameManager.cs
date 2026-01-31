@@ -18,7 +18,28 @@ public class GameManager : MonoBehaviour
     public HugeNumber CurrentRate => rate;
 
     private int maskValue;
+    private int maskValueLevel = 0;
     
+    private float maxCombo = 1.1f;
+    private int maxComboLevel = 0;
+    
+    private bool unlockedDonations = false;
+
+    [Header("Mask value")] 
+    [SerializeField] private HugeNumber maskValueBasePrice;
+    [SerializeField] private float maskValueMultiplier = 1.2f;
+    
+    [Header("Max Combo")] 
+    [SerializeField] private HugeNumber maxComboBasePrice;
+    [SerializeField] private float maxComboAdd = 0.1f;
+    
+    [Header("Chat donation")] 
+    [SerializeField] private HugeNumber donationBasePrice;
+    
+    
+    public bool UnlockedDonations => unlockedDonations;
+    public int MaxComboLevel => maxComboLevel;
+    public int MaskValueLevel => maskValueLevel;
 
     private void Awake()
     {
@@ -67,6 +88,8 @@ public class GameManager : MonoBehaviour
 
         money = money.Subtract(item.GetPrice());
         item.Upgrade();
+        
+        Debug.Log(money);
 
         UpdateRate();
         
@@ -106,5 +129,69 @@ public class GameManager : MonoBehaviour
         }
         
         return false;
+    }
+
+    public void IncreaseMaskValue()
+    {
+        Debug.Log(money);
+        Debug.Log(GetMaskValuePrice());
+        if (money.IsBiggerThan(GetMaskValuePrice()))
+        {
+            Debug.Log(money.FormatNumber());
+            Debug.Log(GetMaskValuePrice().FormatNumber());
+            
+            money = money.Subtract(GetMaskValuePrice());
+            maskValueLevel++;
+            maskValue = Mathf.CeilToInt(maskValue * maskValueMultiplier);
+            UIManager.Instance.UpdateTopBar(total, money, rate);
+            UIManager.Instance.UpdateShop();
+        }
+    }
+
+    public HugeNumber GetMaskValuePrice()
+    {
+        return maskValueBasePrice.Mult(Mathf.Pow(1.15f, maskValueLevel));
+    }
+
+    public int GetNextMaskValue()
+    {
+        return Mathf.CeilToInt(maskValue * maskValueMultiplier);
+    }
+    
+    public void IncreaseMaxCombo()
+    {
+        if (money.IsBiggerThan(GetMaxComboPrice()))
+        {
+            money = money.Subtract(GetMaxComboPrice());
+            maxComboLevel++;
+            maxCombo += maxComboAdd;
+            UIManager.Instance.UpdateTopBar(total, money, rate);
+            UIManager.Instance.UpdateShop();
+        }
+    }
+
+    public HugeNumber GetMaxComboPrice()
+    {
+        return maxComboBasePrice.Mult(Mathf.Pow(1.15f, maxComboLevel));
+    }
+    
+    public float GetNextMaxCombo()
+    {
+        return maxCombo + maxComboAdd;
+    }
+
+    public void UnlockDonations()
+    {
+        if (money.IsBiggerThan(donationBasePrice))
+        {
+            unlockedDonations = true;
+            UIManager.Instance.UpdateTopBar(total, money, rate);
+            UIManager.Instance.UpdateShop();
+        }
+    }
+
+    public HugeNumber GetDonationBasePrice()
+    {
+        return donationBasePrice;
     }
 }

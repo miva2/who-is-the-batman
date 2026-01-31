@@ -63,6 +63,9 @@ public class HugeNumber
 
     public HugeNumber Mult(double multiplier)
     {
+        if(exponent == 0)
+            exponent = 1;
+        
         return new HugeNumber(value * multiplier, exponent);
     }
 
@@ -74,6 +77,10 @@ public class HugeNumber
         
         double newValue = convertedThis.value - convertedOther.value;
         int newExponent = targetExp;
+
+        if (newExponent == 0)
+            newExponent = 1;
+        
         return new HugeNumber(newValue, newExponent);
     }
 
@@ -81,7 +88,7 @@ public class HugeNumber
     // negative numbers not supported
     public bool IsBiggerThan(HugeNumber otherNumber)
     {
-        if (exponent == otherNumber.exponent) return value > otherNumber.value;
+        if (exponent == otherNumber.exponent) return value >= otherNumber.value;
 
         return exponent > otherNumber.exponent;
     }
@@ -111,6 +118,12 @@ public class HugeNumber
     
     public string FormatNumber()
     {
+        if (exponent == 0)
+            exponent = 1;
+        
+        if(step == 0)
+            step = 1;
+        
         // okay to do this every frame?
         int remainder = exponent % step;
         int key = exponent - remainder;

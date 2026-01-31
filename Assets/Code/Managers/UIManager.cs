@@ -73,8 +73,21 @@ public class UIManager : MonoBehaviour
             });
         }
         
+        // BUFFS
+        buffItems[0].item.onClick.AddListener(() =>
+        {
+            GameManager.Instance.IncreaseMaskValue();
+        });
         
-        // TODO do buffs
+        buffItems[1].item.onClick.AddListener(() =>
+        {
+            GameManager.Instance.UnlockDonations();
+        });
+        
+        buffItems[2].item.onClick.AddListener(() =>
+        {
+            GameManager.Instance.IncreaseMaxCombo();
+        });
     }
 
     public void UpdateTopBar(HugeNumber total, HugeNumber money, HugeNumber rate)
@@ -90,6 +103,10 @@ public class UIManager : MonoBehaviour
         {
             shopItems[i].Fill(GameManager.Instance.GetItem(i));
         }
+        
+        buffItems[0].Fill(GameManager.Instance.MaskValueLevel, GameManager.Instance.GetMaskValuePrice());
+        buffItems[1].Fill(GameManager.Instance.UnlockedDonations ? 99 : 0, GameManager.Instance.GetDonationBasePrice());
+        buffItems[2].Fill(GameManager.Instance.MaxComboLevel, GameManager.Instance.GetMaxComboPrice());
 
         if (currentOverIndex != null)
             FillDescription(currentOverIndex);
@@ -99,8 +116,6 @@ public class UIManager : MonoBehaviour
     {
         currentOverIndex = uiItem;
         int index = Array.IndexOf(shopItems, uiItem);
-        
-        Debug.Log(index);
 
         if (index != -1)
         {
@@ -121,13 +136,26 @@ public class UIManager : MonoBehaviour
         itemPanel.SetActive(false);
         buffPanel.SetActive(true);
         
+        index = Array.IndexOf(buffItems, uiItem);
         
-        //find corresponding baseItem
-        //title
-        //level
-        //stat
-        //...
+        titleText2.text = uiItem.title;
+        descriptionText2.text = uiItem.description;
         
+        switch (index)
+        {
+            case 0:
+                statKeyText.text = "Resell value";
+                statText.text = GameManager.Instance.GetNextMaskValue().ToString(); 
+                break;
+            case 1:
+                statKeyText.text = "Stream donation";
+                statText.text = "open!";
+                break;
+            case 2:
+                statKeyText.text = "Max combo";
+                statText.text = GameManager.Instance.GetNextMaxCombo().ToString("0.0"); 
+                break;
+        }
     }
 
     public void ShowNotif(bool canBuy)
