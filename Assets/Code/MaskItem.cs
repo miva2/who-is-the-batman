@@ -59,6 +59,9 @@ public class MaskItem : MonoBehaviour
             boneRb.bodyType = type;
         
         isFrozen = freeze;
+        
+        if(freeze)
+            SetMask(emptySprite);
     }
 
     public void Remove(Vector2 direction, float force)
@@ -110,8 +113,6 @@ public class MaskItem : MonoBehaviour
             bone.transform.localPosition = bonesLocalPositions[i];
             bone.transform.localRotation = bonesLocalRotations[i];
         }
-        
-        SetMask(emptySprite);
     }
 
     private IEnumerator DoWaitForReset()

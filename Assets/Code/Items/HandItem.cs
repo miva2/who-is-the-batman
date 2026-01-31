@@ -3,9 +3,14 @@ using UnityEngine;
 
 public class HandItem : BaseItem
 {
+    [SerializeField]
+    private Sprite[] handSprites;
+    
     private Vector3 startPos;
+    private SpriteRenderer spriteRenderer;
     void Start()
     {
+        spriteRenderer = GetComponent<SpriteRenderer>();
         startPos = transform.position;
     }
 
@@ -29,6 +34,7 @@ public class HandItem : BaseItem
         
         //remove
         Remove();
+        spriteRenderer.sprite = handSprites[1];
         
         //hand go back
         timer = 0;
@@ -41,6 +47,8 @@ public class HandItem : BaseItem
 
             yield return null;
         }
+        
+        spriteRenderer.sprite = handSprites[0];
         
         removeCoroutine = null;
     }

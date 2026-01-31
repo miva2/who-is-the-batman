@@ -24,12 +24,18 @@ public class BaseItem : MonoBehaviour
     [SerializeField] protected int maxMaskRemoveAmount = 10; //need big number here
     [SerializeField] protected float maxAutoCooldown = 1;
     [SerializeField] protected float minAutoCooldown = 1;
-
+    
+    [Header("Debug")]
+    [SerializeField] 
     protected int currentUpgrade = 0;
-    protected float timer = 0;
+    [SerializeField] 
     protected float cooldown;
+    [SerializeField] 
     protected int maskRemoveAmount;
+    [SerializeField] 
     protected float animDuration;
+    
+    protected float timer = 0;
     protected Coroutine removeCoroutine;
 
     public int GetPrice()
@@ -49,10 +55,10 @@ public class BaseItem : MonoBehaviour
         }
         else
         {
-            float step = (float)currentUpgrade / upgradesAmount;
-            cooldown = Mathf.Lerp(maxAutoCooldown, minAutoCooldown, step);
-            animDuration = Mathf.Lerp(maxAnimDuration, minAnimDuration, step);
-            maskRemoveAmount = Mathf.CeilToInt(Mathf.Lerp(minMaskRemoveAmount, maxMaskRemoveAmount, step));
+            float delta = (float)currentUpgrade / upgradesAmount;
+            cooldown = Mathf.Lerp(maxAutoCooldown, minAutoCooldown, delta);
+            animDuration = Mathf.Lerp(maxAnimDuration, minAnimDuration, delta);
+            maskRemoveAmount = Mathf.CeilToInt(Mathf.Lerp(minMaskRemoveAmount, maxMaskRemoveAmount, delta));
         }
 
         currentUpgrade++;
