@@ -3,6 +3,8 @@ using System.Collections.Generic;
 using Unity.VisualScripting;
 using UnityEngine;
 
+
+// Negative numbers are not supported
 [System.Serializable]
 public class HugeNumber
 {
@@ -70,9 +72,27 @@ public class HugeNumber
         HugeNumber convertedOther = ConvertToExp(otherNumber, targetExp);
         HugeNumber convertedThis = ConvertToExp(this, targetExp);
         
-        double newValue = convertedThis.value - convertedOther.value; // fix this
+        double newValue = convertedThis.value - convertedOther.value;
         int newExponent = targetExp;
         return new HugeNumber(newValue, newExponent);
+    }
+
+    // true if other number is bigger than this number
+    // negative numbers not supported
+    public bool IsBiggerThan(HugeNumber otherNumber)
+    {
+        if (exponent == otherNumber.exponent) return value > otherNumber.value;
+
+        return exponent > otherNumber.exponent;
+    }
+    
+    // true if other number is smaller than this number
+    // negative numbers not supported
+    public bool IsSmallerThan(HugeNumber otherNumber)
+    {
+        if (exponent == otherNumber.exponent) return value < otherNumber.value;
+
+        return exponent < otherNumber.exponent;
     }
     
     public void UpdateValue()
