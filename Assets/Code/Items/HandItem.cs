@@ -3,15 +3,18 @@ using UnityEngine;
 
 public class HandItem : BaseItem
 {
+    [Header("Hand")]
     [SerializeField]
     private Sprite[] handSprites;
+    [SerializeField]
+    private Transform handTransform;
+    [SerializeField]
+    private Transform endTransform;
     
-    private Vector3 startPos;
     private SpriteRenderer spriteRenderer;
     void Start()
     {
-        spriteRenderer = GetComponent<SpriteRenderer>();
-        startPos = transform.position;
+        spriteRenderer = handTransform.GetComponent<SpriteRenderer>();
     }
 
     protected override IEnumerator DoRemoveMask()
@@ -20,14 +23,14 @@ public class HandItem : BaseItem
         float timer = 0;
         float halfDuration = animDuration / 2;
         
-        Vector3 maskPos = MaskPool.Instance.transform.position;
+        Vector3 startPos = handTransform.position;
         
         while (timer < halfDuration)
         {
             timer += Time.deltaTime;
             
             float delta = timer / halfDuration;
-            transform.position = Vector3.Lerp(startPos, maskPos, delta);
+            handTransform.position = Vector3.Lerp(startPos, endTransform.position, delta);
 
             yield return null;
         }
@@ -43,12 +46,13 @@ public class HandItem : BaseItem
             timer += Time.deltaTime;
             
             float delta = timer / halfDuration;
-            transform.position = Vector3.Lerp(maskPos, startPos, delta);
+            handTransform.position = Vector3.Lerp(endTransform.position, startPos, delta);
 
             yield return null;
         }
         
         spriteRenderer.sprite = handSprites[0];
+        handTransform.position = startPos;
         
         removeCoroutine = null;
     }
