@@ -4,20 +4,59 @@ using Random = UnityEngine.Random;
 
 public class BaseItem : MonoBehaviour
 {
-    //add base price, multiplier, etc
-    
-    [SerializeField] protected float animDuration = 2;
-    [SerializeField] protected int maskRemoveAmount = 1;
     [SerializeField] protected bool automatic = true;
-    [SerializeField] protected float cooldown = 1;
     
+    [Header("Mask")]
     [SerializeField] protected Vector2 minDir;
     [SerializeField] protected Vector2 maxDir;
     [SerializeField] protected float minForce;
     [SerializeField] protected float maxForce;
+    
+    [Header("Shop")]
+    [SerializeField] protected int basePrice; //need big number here
+    [SerializeField] protected AnimationCurve priceMultiplier; 
+    [SerializeField] protected int upgradesAmount;
+    
+    [Header("Upgrades")]
+    [SerializeField] protected float maxAnimDuration = 2;
+    [SerializeField] protected float minAnimDuration = 0.1f;
+    [SerializeField] protected int minMaskRemoveAmount = 1; //need big number here
+    [SerializeField] protected int maxMaskRemoveAmount = 10; //need big number here
+    [SerializeField] protected float maxAutoCooldown = 1;
+    [SerializeField] protected float minAutoCooldown = 1;
 
+    protected int currentUpgrade = 0;
     protected float timer = 0;
+    protected float cooldown;
+    protected int maskRemoveAmount;
+    protected float animDuration;
     protected Coroutine removeCoroutine;
+
+    public int GetPrice()
+    {
+        float step = (float)currentUpgrade / upgradesAmount;
+        return Mathf.CeilToInt(basePrice * priceMultiplier.Evaluate(step));
+    }
+
+    public void Upgrade()
+    {
+        if (!gameObject.activeInHierarchy) //initial purchase
+        {
+            gameObject.SetActive(true);
+            cooldown = maxAutoCooldown;
+            animDuration = maxAnimDuration;
+            maskRemoveAmount = minMaskRemoveAmount;
+        }
+        else
+        {
+            float step = (float)currentUpgrade / upgradesAmount;
+            cooldown = Mathf.Lerp(maxAutoCooldown, minAutoCooldown, step);
+            animDuration = Mathf.Lerp(maxAnimDuration, minAnimDuration, step);
+            maskRemoveAmount = Mathf.CeilToInt(Mathf.Lerp(minMaskRemoveAmount, maxMaskRemoveAmount, step));
+        }
+
+        currentUpgrade++;
+    }
 
     private void Update()
     {
