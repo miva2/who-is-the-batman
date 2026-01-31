@@ -1,3 +1,4 @@
+using System;
 using System.Collections;
 using UnityEngine;
 using Random = UnityEngine.Random;
@@ -14,7 +15,7 @@ public class BaseItem : MonoBehaviour
     
     [Header("Shop")]
     [SerializeField] protected int basePrice; //need big number here
-    [SerializeField] protected AnimationCurve priceMultiplier; 
+    [SerializeField] protected float priceMultiplier = 1.15f; 
     [SerializeField] protected int upgradesAmount;
     
     [Header("Upgrades")]
@@ -40,11 +41,10 @@ public class BaseItem : MonoBehaviour
 
     public int GetPrice()
     {
-        float step = (float)currentUpgrade / upgradesAmount;
-        return Mathf.CeilToInt(basePrice * priceMultiplier.Evaluate(step));
+        return Mathf.CeilToInt(basePrice * Mathf.Pow(priceMultiplier, currentUpgrade));
     }
 
-    public void Upgrade()
+    public virtual void Upgrade()
     {
         if (!gameObject.activeInHierarchy) //initial purchase
         {
@@ -60,11 +60,14 @@ public class BaseItem : MonoBehaviour
             animDuration = Mathf.Lerp(maxAnimDuration, minAnimDuration, delta);
             maskRemoveAmount = Mathf.CeilToInt(Mathf.Lerp(minMaskRemoveAmount, maxMaskRemoveAmount, delta));
         }
-
+        
         currentUpgrade++;
+
+        if (currentUpgrade >= upgradesAmount)
+            currentUpgrade = upgradesAmount;
     }
 
-    private void Update()
+    protected virtual void Update()
     {
         if(!automatic) return;
         
@@ -100,7 +103,6 @@ public class BaseItem : MonoBehaviour
         float force = Random.Range(minForce, maxForce);
 
         MaskPool.Instance.Remove(dir.normalized, force);
-        
-        //gain maskRemoveAmount 
+        GameManager.Instance.Gain(maskRemoveAmount);
     }
 }
