@@ -60,7 +60,13 @@ Shader "Custom/SpriteTextureOverride"
             fixed4 frag (v2f i) : SV_Target
             {
                 fixed4 tex = tex2D(_OverrideTex, i.uv);
+
+                // Premultiply alpha
+                tex.rgb *= tex.a;
+
+                // Apply vertex & material color
                 tex *= i.color;
+
                 return tex;
             }
             ENDCG

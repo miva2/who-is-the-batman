@@ -1,21 +1,31 @@
 using System.Collections;
 using UnityEngine;
+using UnityEngine.LowLevelPhysics2D;
 
 public class MaskItem : MonoBehaviour
 {
     [SerializeField]
     private Rigidbody2D[] bonesRbs;
-
-    [SerializeField] private Sprite sprite;
-    [SerializeField] private float delay;
+    
+    [SerializeField]
+    private float resetTime;
+    
+    [SerializeField]
+    private Sprite emptySprite;
     
     private Rigidbody2D rb;
     private Collider2D[] boneColliders;
     
+    private Vector3[] bonesLocalPositions;
+    private Quaternion[] bonesLocalRotations;
+    
     private SpriteRenderer sr;
     private MaterialPropertyBlock block;
 
-    private void Start()
+    private bool isFrozen;
+    public bool Frozen => isFrozen;
+
+    public void Initialize()
     {
         rb = GetComponent<Rigidbody2D>();
         sr = GetComponent<SpriteRenderer>();
@@ -23,11 +33,16 @@ public class MaskItem : MonoBehaviour
         
         boneColliders = GetComponentsInChildren<Collider2D>();
         
-        Freeze(true);
-
-        StartCoroutine(DoAddForce());
+        bonesLocalPositions = new Vector3[bonesRbs.Length];
+        bonesLocalRotations = new Quaternion[bonesRbs.Length];
         
-        SetMask(sprite);
+        for (int i = 0; i < bonesRbs.Length; i++)
+        {
+            bonesLocalPositions[i] = bonesRbs[i].transform.localPosition;
+            bonesLocalRotations[i] = bonesRbs[i].transform.localRotation;
+        }
+        
+        Freeze(true);
     }
 
     public void SetMask(Sprite sprite)
@@ -48,6 +63,8 @@ public class MaskItem : MonoBehaviour
         
         foreach (Collider2D col in boneColliders)
             col.enabled = !freeze;
+        
+        isFrozen = freeze;
     }
 
     public void Remove(Vector2 direction, float force)
@@ -57,6 +74,8 @@ public class MaskItem : MonoBehaviour
         Rigidbody2D bone = GetClosestBoneInDirection(direction);
                 
         rb.AddForce(direction * force, ForceMode2D.Impulse);
+        rb.AddTorque(180, ForceMode2D.Impulse);
+        
         bone.AddForce(direction * force * 0.8f, ForceMode2D.Impulse);
         
         foreach (var b in bonesRbs)
@@ -69,12 +88,42 @@ public class MaskItem : MonoBehaviour
             float falloff = Mathf.Clamp01(1f - distance * 2f);
             b.AddForce(direction * force * falloff, ForceMode2D.Impulse);
         }
+
+        StartCoroutine(DoWaitForReset());
     }
 
-    IEnumerator DoAddForce()
+    public void Reset()
     {
-        yield return new WaitForSeconds(1f + delay);
-        Remove(new Vector2(0.5f, 0.5f), 175);
+        StopAllCoroutines();
+        
+        Freeze(true);
+        
+        transform.localPosition = Vector3.zero;
+        transform.localRotation = Quaternion.identity;
+
+        // Reset rigidbody state
+        rb.linearVelocity = Vector2.zero;
+        rb.angularVelocity = 0f;
+
+        // Reset bones
+        for (int i = 0; i < bonesRbs.Length; i++)
+        {
+            Rigidbody2D bone = bonesRbs[i];
+
+            bone.linearVelocity = Vector2.zero;
+            bone.angularVelocity = 0f;
+
+            bone.transform.localPosition = bonesLocalPositions[i];
+            bone.transform.localRotation = bonesLocalRotations[i];
+        }
+        
+        SetMask(emptySprite);
+    }
+
+    private IEnumerator DoWaitForReset()
+    {
+        yield return new WaitForSeconds(resetTime);
+        Reset();
     }
     
     private Rigidbody2D GetClosestBoneInDirection(Vector2 direction)

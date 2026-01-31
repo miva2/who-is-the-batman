@@ -1,0 +1,21 @@
+%YAML 1.1
+%TAG !u! tag:unity3d.com,2011:
+--- !u!114 &11400000
+MonoBehaviour:
+  m_ObjectHideFlags: 0
+  m_CorrespondingSourceObject: {fileID: 0}
+  m_PrefabInstance: {fileID: 0}
+  m_PrefabAsset: {fileID: 0}
+  m_GameObject: {fileID: 0}
+  m_Enabled: 1
+  m_EditorHideFlags: 0
+  m_Script: {fileID: 11500000, guid: dd8151d200b2845e78ee29eabb3d9808, type: 3}
+  m_Name: MaskLibrary
+  m_EditorClassIdentifier: Assembly-CSharp::MaskLibrary
+  masks:
+  - Sprite: {fileID: 21300000, guid: 948710ae099944593bcf88b9fa9d22ad, type: 3}
+    fxKey: 
+  - Sprite: {fileID: 21300000, guid: 0e7f838b867df4539bfcf47e71970a20, type: 3}
+    fxKey: 
+  - Sprite: {fileID: 21300000, guid: b246b0ee5863e4da6850db50131ae402, type: 3}
+    fxKey: 

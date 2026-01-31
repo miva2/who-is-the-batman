@@ -336,6 +336,7 @@ GameObject:
   - component: {fileID: 4394874192916908411}
   - component: {fileID: 5323587355639459693}
   - component: {fileID: 6835469932291075777}
+  - component: {fileID: 5029777050430500241}
   m_Layer: 0
   m_Name: MaskItem
   m_TagString: Untagged
@@ -479,6 +480,29 @@ Rigidbody2D:
   m_SleepingMode: 1
   m_CollisionDetection: 0
   m_Constraints: 0
+--- !u!114 &5029777050430500241
+MonoBehaviour:
+  m_ObjectHideFlags: 0
+  m_CorrespondingSourceObject: {fileID: 0}
+  m_PrefabInstance: {fileID: 0}
+  m_PrefabAsset: {fileID: 0}
+  m_GameObject: {fileID: 947679077773400207}
+  m_Enabled: 1
+  m_EditorHideFlags: 0
+  m_Script: {fileID: 11500000, guid: 1d3afb54e9bc14192a7fcbf9cf44ed59, type: 3}
+  m_Name: 
+  m_EditorClassIdentifier: Assembly-CSharp::MaskItem
+  bonesRbs:
+  - {fileID: 1629603650361546904}
+  - {fileID: 4228268358105795605}
+  - {fileID: 8689806449795863911}
+  - {fileID: 8020739037106476083}
+  - {fileID: 751111862122977931}
+  - {fileID: 507468618126278468}
+  - {fileID: 8346611938838296998}
+  - {fileID: 3386299592997524324}
+  resetTime: 8
+  emptySprite: {fileID: 21300000, guid: bbe727b8bd407418a900724bdc3ced53, type: 3}
 --- !u!1 &2785131484310918852
 GameObject:
   m_ObjectHideFlags: 0
