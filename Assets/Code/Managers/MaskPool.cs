@@ -9,6 +9,7 @@ public class MaskPool : MonoBehaviour
     [SerializeField] private int poolSize;
     [SerializeField] private GameObject prefab;
     [SerializeField] private Sprite batmask;
+    [SerializeField] private Transform vacuum;
     
     private List<MaskItem> pool;
 
@@ -46,6 +47,25 @@ public class MaskPool : MonoBehaviour
         MaskItem lastMask = pool[pool.Count - 1];
         
         lastMask.Remove(direction, force);
+        pool.RemoveAt(pool.Count - 1);
+        pool.Insert(0, lastMask);
+        
+        lastMask = pool[pool.Count - 1];
+        
+        if(!lastMask.Frozen)
+            lastMask.Reset();
+
+        MaskLibrary.MaskEntry entry = maskLibrary.GetRandom();
+        lastMask.SetMask(entry.Sprite); //choose random
+        SoundManager.Instance.PlayFX(entry.fxKey != "" ? entry.fxKey : "default mask");
+    }
+    
+    public void SpecialRemove()
+    {
+         MaskItem lastMask = pool[pool.Count - 1];
+        
+        lastMask.Vacuum(vacuum.position);
+        
         pool.RemoveAt(pool.Count - 1);
         pool.Insert(0, lastMask);
         

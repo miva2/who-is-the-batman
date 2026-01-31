@@ -1,0 +1,141 @@
+%YAML 1.1
+%TAG !u! tag:unity3d.com,2011:
+--- !u!114 &11400000
+MonoBehaviour:
+  m_ObjectHideFlags: 0
+  m_CorrespondingSourceObject: {fileID: 0}
+  m_PrefabInstance: {fileID: 0}
+  m_PrefabAsset: {fileID: 0}
+  m_GameObject: {fileID: 0}
+  m_Enabled: 1
+  m_EditorHideFlags: 0
+  m_Script: {fileID: 11500000, guid: ede7a90162ee480cb289015df5be744e, type: 3}
+  m_Name: ChatMessageLibrary
+  m_EditorClassIdentifier: Assembly-CSharp::ChatMessageLibrary
+  messages:
+  - username: Mike
+    message: First!
+    threshold:
+      formattedNumber: 
+      format: 
+      value: 0
+      exponent: 0
+      step: 0
+      max: 0
+      maxExceededLetter: 
+    donation:
+      formattedNumber: 
+      format: 
+      value: 0
+      exponent: 0
+      step: 0
+      max: 0
+      maxExceededLetter: 
+  - username: Gertje
+    message: Tis niet waar he!
+    threshold:
+      formattedNumber: 
+      format: 
+      value: 0
+      exponent: 0
+      step: 0
+      max: 0
+      maxExceededLetter: 
+    donation:
+      formattedNumber: 
+      format: 
+      value: 0
+      exponent: 0
+      step: 0
+      max: 0
+      maxExceededLetter: 
+  - username: B'Elanna
+    message: Damn I still don't know how who this guy is?
+    threshold:
+      formattedNumber: 
+      format: 
+      value: 100
+      exponent: 1
+      step: 0
+      max: 0
+      maxExceededLetter: 
+    donation:
+      formattedNumber: 
+      format: 
+      value: 500
+      exponent: 1
+      step: 0
+      max: 0
+      maxExceededLetter: 
+  - username: Jerry
+    message: How many masks does this guy have?!
+    threshold:
+      formattedNumber: 
+      format: 
+      value: 0
+      exponent: 0
+      step: 0
+      max: 0
+      maxExceededLetter: 
+    donation:
+      formattedNumber: 
+      format: 
+      value: 0
+      exponent: 0
+      step: 0
+      max: 0
+      maxExceededLetter: 
+  - username: Aymeric
+    message: Shut up, I'm coding!
+    threshold:
+      formattedNumber: 
+      format: 
+      value: 0
+      exponent: 0
+      step: 0
+      max: 0
+      maxExceededLetter: 
+    donation:
+      formattedNumber: 
+      format: 
+      value: 0
+      exponent: 0
+      step: 0
+      max: 0
+      maxExceededLetter: 
+  - username: Mike
+    message: Where is this being streamed from?
+    threshold:
+      formattedNumber: 
+      format: 
+      value: 0
+      exponent: 0
+      step: 0
+      max: 0
+      maxExceededLetter: 
+    donation:
+      formattedNumber: 
+      format: 
+      value: 0
+      exponent: 0
+      step: 0
+      max: 0
+      maxExceededLetter: 
+  - username: Mike
+    message: Where is this being streamed from?
+    threshold:
+      formattedNumber: 
+      format: 
+      value: 0
+      exponent: 0
+      step: 0
+      max: 0
+      maxExceededLetter: 
+    donation:
+      formattedNumber: 
+      format: 
+      value: 0
+      exponent: 0
+      step: 0
+      max: 0
+      maxExceededLetter: 

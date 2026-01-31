@@ -1,5 +1,3 @@
-using System;
-using System.Collections;
 using UnityEngine;
 
 public class GameManager : MonoBehaviour
@@ -12,10 +10,15 @@ public class GameManager : MonoBehaviour
 
     [SerializeField] private BaseItem[] items;
 
-    private int total = 0; 
-    private int money = 0;
+    private HugeNumber total;
+    public HugeNumber CurrentTotal => total;
+    private HugeNumber money;
+    public HugeNumber CurrentMoney => money;
+    private HugeNumber rate;
+    public HugeNumber CurrentRate => rate;
 
-    private int maskValue = 1;
+    private int maskValue;
+    
 
     private void Awake()
     {
@@ -30,16 +33,25 @@ public class GameManager : MonoBehaviour
 
     private void Start()
     {
-        foreach (BaseItem item in items)
-            item.Upgrade();
+        total = new HugeNumber(0,1);
+        money = new HugeNumber(0,1);
+        rate = new HugeNumber(0,1);
+
+        maskValue = 1;
+        
+        money = handLeft.GetPrice();
+        Upgrade(0);
+        
+        UIManager.Instance.UpdateTopBar(total, money, rate);
+        UIManager.Instance.ShowNotif(false);
     }
 
     public void ClickMask()
     {
-        if (!handRight.RemoveMask())
+        if (!handLeft.RemoveMask())
         {
-            if (handLeft.gameObject.activeInHierarchy)
-                handLeft.RemoveMask();
+            if (handRight.gameObject.activeInHierarchy)
+                handRight.RemoveMask();
         }
     }
 
@@ -47,13 +59,52 @@ public class GameManager : MonoBehaviour
     {
         BaseItem item = items[index];
 
-        money -= item.GetPrice();
+        if (money.IsSmallerThan(item.GetPrice()))
+        {
+            Debug.Log("Not enough money");
+            return;
+        }
+
+        money = money.Subtract(item.GetPrice());
         item.Upgrade();
+
+        UpdateRate();
+        
+        UIManager.Instance.UpdateTopBar(total, money, rate);
+        UIManager.Instance.UpdateShop();
     }
 
-    public void Gain(int amount)
+    public void Gain(HugeNumber amount)
     {
-        total += amount;
-        money += amount * maskValue;
+        total = total.Add(amount);
+        money = money.Add(amount.Mult(maskValue));
+        UIManager.Instance.UpdateTopBar(total, money, rate);
+
+        bool canBuy = CanBuyUpgrade();
+        UIManager.Instance.ShowNotif(canBuy);
+    }
+
+    public BaseItem GetItem(int index)
+    {
+        return items[index];
+    }
+
+    private void UpdateRate()
+    {
+        rate = new HugeNumber(0,1);
+
+        for(int i = 2; i < items.Length; i++)
+            rate = rate.Add(items[i].GetRate());
+    }
+
+    private bool CanBuyUpgrade()
+    {
+        foreach (BaseItem it in items)
+        {
+            if(it.GetPrice().IsSmallerThan(money))
+                return true;
+        }
+        
+        return false;
     }
 }
