@@ -1,15 +1,27 @@
 using System.Collections.Generic;
 using UnityEngine;
-using Random = System.Random;
 
 public class MaskPool : MonoBehaviour
 {
+    public static MaskPool Instance;
+    
     [SerializeField] private MaskLibrary maskLibrary;
     [SerializeField] private int poolSize;
     [SerializeField] private GameObject prefab;
     [SerializeField] private Sprite batmask;
     
     private List<MaskItem> pool;
+
+    private void Awake()
+    {
+        if (Instance == null)
+        {
+            Instance = this;
+            DontDestroyOnLoad(this);
+        }
+        else 
+            Destroy(gameObject);
+    }
 
     private void Start()
     {
@@ -27,15 +39,13 @@ public class MaskPool : MonoBehaviour
         
         MaskItem lastMask = pool[pool.Count - 1];
         lastMask.SetMask(batmask);
-        
-        InvokeRepeating("Remove", 1f, 0.2f);
     }
 
-    public void Remove()
+    public void Remove(Vector2 direction, float force)
     {
         MaskItem lastMask = pool[pool.Count - 1];
         
-        lastMask.Remove(new Vector2(UnityEngine.Random.Range(-1f, 1f), UnityEngine.Random.Range(-1, 1f)), UnityEngine.Random.Range(150, 200f));
+        lastMask.Remove(direction, force);
         pool.RemoveAt(pool.Count - 1);
         pool.Insert(0, lastMask);
         
