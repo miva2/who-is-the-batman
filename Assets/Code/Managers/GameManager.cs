@@ -30,7 +30,8 @@ public class GameManager : MonoBehaviour
 
     private void Start()
     {
-        handRight.Upgrade();
+        foreach (BaseItem item in items)
+            item.Upgrade();
     }
 
     public void ClickMask()
