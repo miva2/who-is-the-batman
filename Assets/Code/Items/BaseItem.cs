@@ -97,12 +97,16 @@ public class BaseItem : MonoBehaviour
         yield break;
     }
 
-    protected void Remove()
+    protected void Remove(bool vacuum = false)
     {
         Vector2 dir = new Vector2(Random.Range(minDir.x,  maxDir.x), Random.Range(minDir.y, maxDir.y));
         float force = Random.Range(minForce, maxForce) + (((float)currentUpgrade / upgradesAmount) * 100);
 
-        MaskPool.Instance.Remove(dir.normalized, force);
+        if(vacuum)
+            MaskPool.Instance.SpecialRemove();
+        else
+            MaskPool.Instance.Remove(dir.normalized, force);
+        
         GameManager.Instance.Gain(maskRemoveAmount);
     }
 }

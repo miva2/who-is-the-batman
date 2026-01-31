@@ -21,11 +21,15 @@ public class MaskItem : MonoBehaviour
     private SpriteRenderer sr;
     private MaterialPropertyBlock block;
 
+    private Vector3 startScale;
+
     private bool isFrozen;
     public bool Frozen => isFrozen;
 
     public void Initialize()
     {
+        startScale = transform.localScale;
+        
         rb = GetComponent<Rigidbody2D>();
         sr = GetComponent<SpriteRenderer>();
         block = new MaterialPropertyBlock();
@@ -89,12 +93,25 @@ public class MaskItem : MonoBehaviour
         StartCoroutine(DoWaitForReset());
     }
 
+    public void Vacuum(Vector3 vacuum)
+    {
+        Freeze(false);
+        
+        foreach (var b in bonesRbs)
+        {
+            b.AddForce(Random.insideUnitSphere * 30, ForceMode2D.Impulse);
+        }
+        
+        StartCoroutine(DoVacuumWaitForReset(vacuum));
+    }
+
     public void Reset()
     {
         StopAllCoroutines();
         
         Freeze(true);
         
+        transform.localScale = startScale;
         transform.localPosition = Vector3.zero;
         transform.localRotation = Quaternion.identity;
 
@@ -118,6 +135,38 @@ public class MaskItem : MonoBehaviour
     private IEnumerator DoWaitForReset()
     {
         yield return new WaitForSeconds(resetTime);
+        Reset();
+    }
+    
+    private IEnumerator DoVacuumWaitForReset(Vector3 vacuum)
+    {
+        float timer = 0;
+        float vacuumDuration = 1;
+        
+        rb.bodyType = RigidbodyType2D.Kinematic;
+        
+        Vector3 startPos = transform.position;
+        
+        while (timer < resetTime)
+        {
+            timer += Time.deltaTime;
+            
+            float delta = timer / vacuumDuration;
+            float delayedDelta = delta - 0.2f;
+
+            if (delayedDelta > 0 && delayedDelta < 1)
+            {
+                transform.localScale = Vector3.Lerp(startScale, Vector3.zero, delayedDelta);
+            }
+
+            if (delta <= 1)
+            {
+                transform.position = Vector3.Lerp(startPos, vacuum, delta);
+            }
+            
+            yield return null;
+        }
+
         Reset();
     }
     
