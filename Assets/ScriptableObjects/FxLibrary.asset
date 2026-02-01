@@ -13,7 +13,15 @@ MonoBehaviour:
   m_Name: FxLibrary
   m_EditorClassIdentifier: Assembly-CSharp::FxLibrary
   fx:
-  - key: default mask
-    sound: {fileID: 8300000, guid: 888d61782b86441369bd9e79454c356f, type: 3}
-  - key: duck
-    sound: {fileID: 8300000, guid: 888d61782b86441369bd9e79454c356f, type: 3}
+  - key: default mask1
+    sound: {fileID: 8300000, guid: 09eb811dba6334260830d0b55cfcc114, type: 3}
+  - key: default mask2
+    sound: {fileID: 8300000, guid: 73fec3fd323ad4c2882eb2adfabc057d, type: 3}
+  - key: default mask3
+    sound: {fileID: 8300000, guid: 58556c6bb673a4929a487588f1c32919, type: 3}
+  - key: fan
+    sound: {fileID: 8300000, guid: 8f0d38ce5652141d9b0668f4f7d3ff56, type: 3}
+  - key: trumpet
+    sound: {fileID: 8300000, guid: 221b7e98afd694438976146b9e8590dd, type: 3}
+  - key: vacuum
+    sound: {fileID: 8300000, guid: 292c2b9d1d2e344849b15e5f520e5431, type: 3}

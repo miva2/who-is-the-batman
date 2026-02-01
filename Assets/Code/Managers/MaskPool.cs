@@ -36,10 +36,13 @@ public class MaskPool : MonoBehaviour
             item.Initialize();
             
             pool.Add(item);
+            
+            go.SetActive(false);
         }
         
         MaskItem lastMask = pool[pool.Count - 1];
         lastMask.SetMask(batmask);
+        lastMask.gameObject.SetActive(true);
     }
 
     public void Remove(Vector2 direction, float force)
@@ -57,7 +60,8 @@ public class MaskPool : MonoBehaviour
 
         MaskLibrary.MaskEntry entry = maskLibrary.GetRandom();
         lastMask.SetMask(entry.Sprite); //choose random
-        SoundManager.Instance.PlayFX(entry.fxKey != "" ? entry.fxKey : "default mask");
+        lastMask.gameObject.SetActive(true);
+        SoundManager.Instance.PlayFX(entry.fxKey != "" ? entry.fxKey : "default mask" + Random.Range(1, 4));
     }
     
     public void SpecialRemove()
@@ -76,6 +80,7 @@ public class MaskPool : MonoBehaviour
 
         MaskLibrary.MaskEntry entry = maskLibrary.GetRandom();
         lastMask.SetMask(entry.Sprite); //choose random
-        SoundManager.Instance.PlayFX(entry.fxKey != "" ? entry.fxKey : "default mask");
+        lastMask.gameObject.SetActive(true);
+        SoundManager.Instance.PlayFX(entry.fxKey != "" ? entry.fxKey : "default mask" + Random.Range(1, 4));
     }
 }

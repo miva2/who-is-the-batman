@@ -10,7 +10,8 @@ public class ShopItem : MonoBehaviour, IPointerEnterHandler, IPointerExitHandler
     public Image icon;
     public TextMeshProUGUI levelText;
     public TextMeshProUGUI priceText;
-    public Image buyImage;
+    public GameObject buyImageGood;
+    public GameObject buyImageBad;
 
     [Header("Item Info")] 
     public string title;
@@ -27,7 +28,8 @@ public class ShopItem : MonoBehaviour, IPointerEnterHandler, IPointerExitHandler
         {
             item.interactable = false;
             item.GetComponent<Image>().color = Color.gray;
-            buyImage.color = Color.gray;
+            buyImageGood.SetActive(false);
+            buyImageBad.SetActive(true);
             priceText.text = "Max";
             return;
         }
@@ -36,11 +38,13 @@ public class ShopItem : MonoBehaviour, IPointerEnterHandler, IPointerExitHandler
 
         if (baseItem.GetPrice().IsBiggerThan(GameManager.Instance.CurrentMoney))
         {
-            buyImage.color = Color.red;
+            buyImageGood.SetActive(false);
+            buyImageBad.SetActive(true);
         }
         else
         {
-            buyImage.color = Color.green;
+            buyImageGood.SetActive(true);
+            buyImageBad.SetActive(false);
         }
             
         icon.color = baseItem.Level == 0 ? Color.gray : Color.white;
@@ -49,26 +53,31 @@ public class ShopItem : MonoBehaviour, IPointerEnterHandler, IPointerExitHandler
     public void Fill(int level, HugeNumber price)
     {
         icon.sprite = IconSprite;
-        levelText.text = level.ToString("00");
+        
+        if(level > -1)
+            levelText.text = level.ToString("00");
 
         if (level == 99)
         {
             item.interactable = false;
             item.GetComponent<Image>().color = Color.gray;
-            buyImage.color = Color.gray;
+            buyImageGood.SetActive(false);
+            buyImageBad.SetActive(true);
             priceText.text = "Max";
             return;
         }
             
         priceText.text = price.FormatNumber();
 
-        if (price.IsBiggerThan(GameManager.Instance.CurrentMoney))
+        if (price.IsBiggerThan(GameManager.Instance.CurrentMoney)) 
         {
-            buyImage.color = Color.red;
+            buyImageGood.SetActive(false);
+            buyImageBad.SetActive(true);
         }
         else
         {
-            buyImage.color = Color.green;
+            buyImageGood.SetActive(true);
+            buyImageBad.SetActive(false);
         }
             
         icon.color = level == 0 ? Color.gray : Color.white;
@@ -77,7 +86,7 @@ public class ShopItem : MonoBehaviour, IPointerEnterHandler, IPointerExitHandler
     public void OnPointerEnter(PointerEventData eventData)
     {
         UIManager.Instance.FillDescription(this);
-        transform.localScale = Vector3.one * 1.1f;
+        transform.localScale = Vector3.one * 1.05f;
     }
 
     public void OnPointerExit(PointerEventData eventData)

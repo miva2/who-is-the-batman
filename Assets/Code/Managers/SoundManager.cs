@@ -50,7 +50,7 @@ public class SoundManager : MonoBehaviour
         
         musicSource = gameObject.AddComponent<AudioSource>();
         musicSource.clip = music;
-        musicSource.volume = 1f;
+        musicSource.volume = 0.6f;
         musicSource.loop = true;
         musicSource.Play();
     }

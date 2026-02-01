@@ -1,3 +1,4 @@
+using System;
 using UnityEngine;
 
 public class GameManager : MonoBehaviour
@@ -9,6 +10,8 @@ public class GameManager : MonoBehaviour
     [SerializeField] private BaseItem handLeft;
 
     [SerializeField] private BaseItem[] items;
+    
+    [SerializeField] private HugeNumber finisherPrice;
 
     private HugeNumber total;
     public HugeNumber CurrentTotal => total;
@@ -16,12 +19,17 @@ public class GameManager : MonoBehaviour
     public HugeNumber CurrentMoney => money;
     private HugeNumber rate;
     public HugeNumber CurrentRate => rate;
+    
+    public HugeNumber FinisherPrice => finisherPrice;
 
     private int maskValue;
     private int maskValueLevel = 0;
     
     private float maxCombo = 1.1f;
     private int maxComboLevel = 0;
+    
+    private float currentCombo = 1;
+    private float currentComboAdd = 0.01f;
     
     private bool unlockedDonations = false;
 
@@ -40,6 +48,9 @@ public class GameManager : MonoBehaviour
     public bool UnlockedDonations => unlockedDonations;
     public int MaxComboLevel => maxComboLevel;
     public int MaskValueLevel => maskValueLevel;
+
+    private float lastClickTime = 0;
+    private float comboWaitDuration = 1;
 
     private void Awake()
     {
@@ -64,16 +75,38 @@ public class GameManager : MonoBehaviour
         Upgrade(0);
         
         UIManager.Instance.UpdateTopBar(total, money, rate);
+        UIManager.Instance.UpdateMaskValue(maskValue);
+        UIManager.Instance.UpdateCombo(currentCombo);
         UIManager.Instance.ShowNotif(false);
+    }
+
+    private void Update()
+    {
+        lastClickTime -= Time.deltaTime;
+
+        if (lastClickTime < 0)
+        {
+            lastClickTime = 0;
+            currentCombo -= currentComboAdd * Time.deltaTime * 5;
+            currentCombo = Mathf.Clamp(currentCombo, 1, maxCombo);
+            UIManager.Instance.UpdateCombo(currentCombo);
+        }
     }
 
     public void ClickMask()
     {
+        lastClickTime = comboWaitDuration;
+        
+        currentCombo += currentComboAdd;
+        currentCombo = Mathf.Clamp(currentCombo, 1, maxCombo);
+        
         if (!handLeft.RemoveMask())
         {
             if (handRight.gameObject.activeInHierarchy)
                 handRight.RemoveMask();
         }
+        
+        UIManager.Instance.UpdateCombo(currentCombo);
     }
 
     public void Upgrade(int index)
@@ -88,17 +121,18 @@ public class GameManager : MonoBehaviour
 
         money = money.Subtract(item.GetPrice());
         item.Upgrade();
-        
-        Debug.Log(money);
 
         UpdateRate();
         
         UIManager.Instance.UpdateTopBar(total, money, rate);
         UIManager.Instance.UpdateShop();
+        UIManager.Instance.ShowNotif(CanBuyUpgrade());
     }
 
     public void Gain(HugeNumber amount)
     {
+        amount = amount.Mult(currentCombo); //multiply by combo
+        
         total = total.Add(amount);
         money = money.Add(amount.Mult(maskValue));
         UIManager.Instance.UpdateTopBar(total, money, rate);
@@ -143,8 +177,11 @@ public class GameManager : MonoBehaviour
             money = money.Subtract(GetMaskValuePrice());
             maskValueLevel++;
             maskValue = Mathf.CeilToInt(maskValue * maskValueMultiplier);
+            
             UIManager.Instance.UpdateTopBar(total, money, rate);
             UIManager.Instance.UpdateShop();
+            UIManager.Instance.UpdateMaskValue(maskValue);
+            UIManager.Instance.ShowNotif(CanBuyUpgrade());
         }
     }
 
@@ -167,6 +204,7 @@ public class GameManager : MonoBehaviour
             maxCombo += maxComboAdd;
             UIManager.Instance.UpdateTopBar(total, money, rate);
             UIManager.Instance.UpdateShop();
+            UIManager.Instance.ShowNotif(CanBuyUpgrade());
         }
     }
 
@@ -187,6 +225,7 @@ public class GameManager : MonoBehaviour
             unlockedDonations = true;
             UIManager.Instance.UpdateTopBar(total, money, rate);
             UIManager.Instance.UpdateShop();
+            UIManager.Instance.ShowNotif(CanBuyUpgrade());
         }
     }
 

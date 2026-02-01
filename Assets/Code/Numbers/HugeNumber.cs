@@ -38,8 +38,7 @@ public class HugeNumber
     // max exponent in the dictionary
     [SerializeField] private int max = 30;
     [SerializeField] private string maxExceededLetter = "∞";
-
-
+    
 
     public HugeNumber( double value, int exponent ,string format = "0.##")
     {
@@ -88,6 +87,8 @@ public class HugeNumber
     // negative numbers not supported
     public bool IsBiggerThan(HugeNumber otherNumber)
     {
+        if(otherNumber == null) return true;
+        
         if (exponent == otherNumber.exponent) return value >= otherNumber.value;
 
         return exponent > otherNumber.exponent;
@@ -97,6 +98,8 @@ public class HugeNumber
     // negative numbers not supported
     public bool IsSmallerThan(HugeNumber otherNumber)
     {
+        if(otherNumber == null) return false;
+        
         if (exponent == otherNumber.exponent) return value < otherNumber.value;
 
         return exponent < otherNumber.exponent;
@@ -104,7 +107,7 @@ public class HugeNumber
     
     public void UpdateValue()
     {
-        double threshold = Math.Pow(10, step) ;
+        double threshold = Math.Pow(10, step);
         while (value >= threshold) // while loop in case updating multiple steps
         {
             // 679 k 

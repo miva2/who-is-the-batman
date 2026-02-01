@@ -14,6 +14,7 @@ public class UIManager : MonoBehaviour
 
     [Header("Shop")]
     [SerializeField] private GameObject shop;
+    [SerializeField] private Button gameBlocker;
     [SerializeField] private ShopItem[] shopItems;
     [SerializeField] private ShopItem[] buffItems;
     
@@ -37,6 +38,15 @@ public class UIManager : MonoBehaviour
     [SerializeField] private Button openShop;
     [SerializeField] private Button closeShop;
     
+    [Header("Combo")]
+    [SerializeField] private TextMeshProUGUI comboText;
+    
+    [Header("Mask Value")]
+    [SerializeField] private TextMeshProUGUI maskValueText;
+    
+    [Header("Finisher")]
+    [SerializeField] private ShopItem finisher;
+    
     private ShopItem currentOverIndex = null;
 
     private void Awake()
@@ -58,6 +68,11 @@ public class UIManager : MonoBehaviour
         });
         
         closeShop.onClick.AddListener(() =>
+        {
+            OpenShop(false);
+        });
+        
+        gameBlocker.onClick.AddListener(() =>
         {
             OpenShop(false);
         });
@@ -88,6 +103,13 @@ public class UIManager : MonoBehaviour
         {
             GameManager.Instance.IncreaseMaxCombo();
         });
+        
+        finisher.Fill(-1, GameManager.Instance.FinisherPrice);
+        
+        finisher.item.onClick.AddListener(() =>
+        {
+            //TODO end game logic, block everything
+        });
     }
 
     public void UpdateTopBar(HugeNumber total, HugeNumber money, HugeNumber rate)
@@ -108,8 +130,10 @@ public class UIManager : MonoBehaviour
         buffItems[1].Fill(GameManager.Instance.UnlockedDonations ? 99 : 0, GameManager.Instance.GetDonationBasePrice());
         buffItems[2].Fill(GameManager.Instance.MaxComboLevel, GameManager.Instance.GetMaxComboPrice());
 
-        if (currentOverIndex != null)
-            FillDescription(currentOverIndex);
+        if (currentOverIndex == null)
+            currentOverIndex = shopItems[0];
+        
+        FillDescription(currentOverIndex);
     }
 
     public void FillDescription(ShopItem uiItem)
@@ -137,25 +161,36 @@ public class UIManager : MonoBehaviour
         buffPanel.SetActive(true);
         
         index = Array.IndexOf(buffItems, uiItem);
+
+        if (index != -1)
+        {
+            titleText2.text = uiItem.title;
+            descriptionText2.text = uiItem.description;
         
+            switch (index)
+            {
+                case 0:
+                    statKeyText.text = "Resell value";
+                    statText.text = GameManager.Instance.GetNextMaskValue().ToString(); 
+                    break;
+                case 1:
+                    statKeyText.text = "Stream donation";
+                    statText.text = "open!";
+                    break;
+                case 2:
+                    statKeyText.text = "Max combo";
+                    statText.text = GameManager.Instance.GetNextMaxCombo().ToString("0.0"); 
+                    break;
+            }
+
+            return;
+        }
+        
+        //finisher
         titleText2.text = uiItem.title;
         descriptionText2.text = uiItem.description;
-        
-        switch (index)
-        {
-            case 0:
-                statKeyText.text = "Resell value";
-                statText.text = GameManager.Instance.GetNextMaskValue().ToString(); 
-                break;
-            case 1:
-                statKeyText.text = "Stream donation";
-                statText.text = "open!";
-                break;
-            case 2:
-                statKeyText.text = "Max combo";
-                statText.text = GameManager.Instance.GetNextMaxCombo().ToString("0.0"); 
-                break;
-        }
+        statKeyText.text = "????";
+        statText.text = "????"; 
     }
 
     public void ShowNotif(bool canBuy)
@@ -165,7 +200,18 @@ public class UIManager : MonoBehaviour
 
     private void OpenShop(bool isOpen)
     {
+        gameBlocker.gameObject.SetActive(isOpen);
         shop.SetActive(isOpen);
         UpdateShop();
+    }
+
+    public void UpdateCombo(float val)
+    {
+        comboText.text = "x" + val.ToString("0.00");
+    }
+    
+    public void UpdateMaskValue(int val)
+    {
+        maskValueText.text = "$ " + val.ToString("0000") + " /";
     }
 }

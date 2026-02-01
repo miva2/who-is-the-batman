@@ -71,6 +71,8 @@ public class MaskItem : MonoBehaviour
     public void Remove(Vector2 direction, float force)
     {
         Freeze(false);
+        
+        sr.sortingOrder = 1;
 
         Rigidbody2D bone = GetClosestBoneInDirection(direction);
                 
@@ -97,6 +99,8 @@ public class MaskItem : MonoBehaviour
     {
         Freeze(false);
         
+        sr.sortingOrder = 1;
+        
         foreach (var b in bonesRbs)
         {
             b.AddForce(Random.insideUnitSphere * 30, ForceMode2D.Impulse);
@@ -108,6 +112,8 @@ public class MaskItem : MonoBehaviour
     public void Reset()
     {
         StopAllCoroutines();
+
+        sr.sortingOrder = 0;
         
         Freeze(true);
         
@@ -130,6 +136,8 @@ public class MaskItem : MonoBehaviour
             bone.transform.localPosition = bonesLocalPositions[i];
             bone.transform.localRotation = bonesLocalRotations[i];
         }
+        
+        gameObject.SetActive(false);
     }
 
     private IEnumerator DoWaitForReset()

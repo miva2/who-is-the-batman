@@ -30,7 +30,7 @@ public class BaseItem : MonoBehaviour
     [SerializeField] 
     protected int currentUpgrade = 0;
     [SerializeField] 
-    protected float cooldown;
+    protected float cooldown = 0;
     [SerializeField] 
     protected HugeNumber maskRemoveAmount;
     [SerializeField] 
@@ -50,6 +50,9 @@ public class BaseItem : MonoBehaviour
 
     public HugeNumber GetRate()
     {
+        if (cooldown == 0)
+            return new HugeNumber(0,1);
+        
         return maskRemoveAmount.Mult(1f/cooldown);
     }
 
